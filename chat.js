@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // --- NEW: Send the entire history to the backend ---
-            const response = await fetch('http://aibot.apexscale.api/chat', {
+            const response = await fetch('http://localhost:3000/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
