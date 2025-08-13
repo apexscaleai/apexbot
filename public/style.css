@@ -7,6 +7,9 @@
     --accent-hover: #2563eb;
     --border-color: rgba(255, 255, 255, 0.1);
     --card-bg: #1a1a1a;
+    --disconnected-color: #f43f5e;
+    --listening-color: #22c55e;
+    --speaking-color: #eab308;
 }
 
 * {
@@ -89,6 +92,7 @@ body {
     font-weight: 600;
     transition: all 0.2s ease;
     border: 1px solid transparent;
+    cursor: pointer;
 }
 
 .primary-button {
@@ -244,11 +248,11 @@ body {
     position: fixed;
     bottom: 100px;
     right: 24px;
-    width: 380px;
+    width: 400px;
     max-width: 90vw;
-    height: 60vh;
-    max-height: 550px;
-    background-color: #1c1c1c;
+    height: 80vh;
+    max-height: 700px;
+    background-color: var(--card-bg);
     border-radius: 16px;
     border: 1px solid var(--border-color);
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -266,58 +270,91 @@ body {
     pointer-events: none;
 }
 
-#chat-header {
-    background-color: #2c2c2e;
+.chat-header {
     padding: 16px 20px;
-    font-weight: 600;
-    color: var(--heading-color);
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--border-color);
 }
-
-#close-chat-btn {
-    background: none; border: none; color: var(--text-color);
-    font-size: 1.75rem; cursor: pointer; transition: color 0.2s;
+.chat-header h3 {
+    color: var(--heading-color);
+    font-weight: 600;
 }
-#close-chat-btn:hover { color: var(--heading-color); }
+#status-light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+#status-light.disconnected { background-color: var(--disconnected-color); }
+#status-light.listening { background-color: var(--listening-color); }
+#status-light.speaking { background-color: var(--speaking-color); }
 
-#chat-messages {
-    flex-grow: 1; padding: 20px; overflow-y: auto;
-    display: flex; flex-direction: column; gap: 16px;
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .message {
-    max-width: 85%; padding: 12px 18px;
-    border-radius: 20px; line-height: 1.5; word-wrap: break-word;
+    max-width: 85%;
+    padding: 12px 18px;
+    border-radius: 20px;
+    line-height: 1.5;
+    word-wrap: break-word;
 }
 
 .user-message {
-    background-color: var(--accent-color); color: white;
-    align-self: flex-end; border-bottom-right-radius: 6px;
+    background-color: var(--accent-color);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
 }
 
 .bot-message {
-    background-color: #2c2c2e; color: var(--heading-color);
-    align-self: flex-start; border-bottom-left-radius: 6px;
+    background-color: #2c2c2e;
+    color: var(--heading-color);
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
 }
 
-#chat-input-container {
-    display: flex; padding: 12px; border-top: 1px solid var(--border-color);
+.chat-input-area {
+    display: flex;
+    padding: 12px;
+    border-top: 1px solid var(--border-color);
+    gap: 8px;
 }
 
-#chat-input {
-    flex-grow: 1; border: none; background-color: #2c2c2e;
-    border-radius: 20px; padding: 12px 18px;
-    font-size: 1rem; color: var(--heading-color);
+#text-input {
+    flex-grow: 1;
+    border: none;
+    background-color: #2c2c2e;
+    border-radius: 20px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    color: var(--heading-color);
 }
-#chat-input:focus { outline: none; }
+#text-input:focus { outline: none; }
 
-#send-btn {
-    background: none; border: none; color: var(--accent-color);
-    width: 44px; height: 44px; margin-left: 8px;
-    cursor: pointer; display: flex; justify-content: center;
-    align-items: center; transition: color 0.2s;
+#mic-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    background-color: var(--accent-color);
+    color: white;
+    flex-shrink: 0;
 }
-#send-btn:hover { color: var(--accent-hover); }
+#mic-btn.recording {
+    background-color: var(--disconnected-color);
+    transform: scale(1.1);
+}
