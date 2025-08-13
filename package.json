@@ -9,7 +9,7 @@
     "author": "Apex Scale AI",
     "license": "ISC",
     "dependencies": {
-      "@deepgram/sdk": "^3.3.3",
+      "@deepgram/sdk": "^4.11.2",
       "@google/generative-ai": "^0.14.1",
       "cors": "^2.8.5",
       "dotenv": "^16.4.5",
