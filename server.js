@@ -3,7 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { WebSocketServer } = require('ws');
-const { Deepgram } = require('@deepgram/sdk');
+// CORRECTED: Use createClient from the Deepgram SDK
+const { createClient } = require('@deepgram/sdk');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // --- Configuration ---
@@ -11,7 +12,8 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-const deepgram = new Deepgram(process.env.DEEPGRAM_API_KEY);
+// CORRECTED: Initialize the Deepgram client with the new method
+const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const generativeModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
@@ -53,14 +55,14 @@ wss.on('connection', (ws) => {
             // Send text response back to client for display
             ws.send(JSON.stringify({ type: 'text', data: botReply }));
 
-            // Send text to Deepgram for TTS
-            const ttsStream = await deepgram.speak.request(
+            // CORRECTED: Send text to Deepgram for TTS using the new SDK format
+            const { stream } = await deepgram.speak.request(
                 { text: botReply },
                 { model: 'aura-luna-en', encoding: 'mulaw', sample_rate: 8000 }
             );
 
-            ttsStream.on('data', (chunk) => ws.send(chunk));
-            ttsStream.on('end', () => ws.send(JSON.stringify({ type: 'tts_complete' })));
+            stream.on('data', (chunk) => ws.send(chunk));
+            stream.on('end', () => ws.send(JSON.stringify({ type: 'tts_complete' })));
 
         } catch (error) {
             console.error('Gemini AI Error:', error);
@@ -69,7 +71,7 @@ wss.on('connection', (ws) => {
     };
 
     const setupDeepgram = () => {
-        deepgramLive = deepgram.transcription.live({
+        deepgramLive = deepgram.listen.live({
             model: 'nova-2',
             interim_results: false,
             smart_format: true,
@@ -77,10 +79,12 @@ wss.on('connection', (ws) => {
             punctuate: true,
         });
 
-        deepgramLive.addListener('open', () => console.log('Deepgram STT connection opened.'));
-        deepgramLive.addListener('close', () => console.log('Deepgram STT connection closed.'));
-        deepgramLive.addListener('error', (error) => console.error('Deepgram STT error:', error));
-        deepgramLive.addListener('transcriptReceived', (data) => {
+        // CORRECTED: Use the new 'on' method for event listeners
+        deepgramLive.on('open', () => console.log('Deepgram STT connection opened.'));
+        deepgramLive.on('close', () => console.log('Deepgram STT connection closed.'));
+        deepgramLive.on('error', (error) => console.error('Deepgram STT error:', error));
+        // CORRECTED: The event name is 'transcript', not 'transcriptReceived'
+        deepgramLive.on('transcript', (data) => {
             const transcript = data.channel.alternatives[0].transcript;
             if (transcript) {
                 console.log('User said:', transcript);

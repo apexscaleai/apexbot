@@ -1,17 +1,107 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Scale AI - Multimodal Demo</title>
+    <title>Apex Scale AI - Intelligent Automation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="chat-container">
+
+    <header class="main-header">
+        <div class="container">
+            <a href="#" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Apex Scale
+            </a>
+            <nav class="main-nav">
+                <a href="#features">Features</a>
+                <a href="#process">Process</a>
+                <a href="#" class="button primary-button chat-trigger">Request Demo</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Where Conversation<br>Meets Conversion.</h1>
+                    <p>We build bespoke AI agents that transform your website from a static page into your most effective sales and support channel.</p>
+                    <button class="button primary-button large-button chat-trigger">Chat With Our AI</button>
+                </div>
+            </div>
+            <div class="hero-gradient"></div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-title">
+                    <span>Key Capabilities</span>
+                    <h2>An Extension Of Your Team</h2>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>24/7 Intelligent Engagement</h3>
+                        <p>Capture and qualify leads around the clock. Our AI provides instant, contextual responses, ensuring no opportunity is missed.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Deep Knowledge Integration</h3>
+                        <p>Trained on your specific documents, products, and FAQs, the agent becomes a true expert on your business from day one.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Seamless Workflow Automation</h3>
+                        <p>From booking qualified appointments to integrating with your CRM, our agents streamline your operations and save valuable time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section id="process" class="process-section">
+            <div class="container">
+                <div class="section-title">
+                    <span>Our Method</span>
+                    <h2>From Concept to Conversion</h2>
+                </div>
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <h3>Discovery</h3>
+                            <p>We dive deep into your business goals, customer journey, and operational workflows to identify the highest-impact automation opportunities.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <h3>Design & Build</h3>
+                            <p>We architect and construct your custom AI agent, engineering its personality, knowledge base, and conversational logic for peak performance.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <h3>Deploy & Optimize</h3>
+                            <p>We seamlessly integrate the agent into your website and continuously monitor its interactions to refine and enhance its effectiveness over time.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Chat Widget Container -->
+    <div id="chat-widget-container" class="hidden">
         <div class="chat-header">
             <h3>Chat with Lexy</h3>
             <div id="status-light" class="disconnected"></div>
@@ -20,272 +110,18 @@
             <!-- Messages will be appended here -->
         </div>
         <div class="chat-input-area">
-            <input type="text" id="text-input" placeholder="Type a message or hold the mic to talk...">
+            <input type="text" id="text-input" placeholder="Type a message or hold the mic...">
             <button id="mic-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
             </button>
         </div>
     </div>
+
+    <!-- The floating chat bubble -->
+    <div id="chat-bubble" class="chat-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    </div>
+
     <script src="chat.js"></script>
 </body>
 </html>
-
-<!-- public/style.css -->
-<style>
-    :root {
-        --bg-color: #0d0d0d;
-        --text-color: #a3a3a3;
-        --heading-color: #e5e5e5;
-        --accent-color: #3b82f6;
-        --accent-hover: #2563eb;
-        --disconnected-color: #f43f5e;
-        --listening-color: #22c55e;
-        --speaking-color: #eab308;
-        --card-bg: #1a1a1a;
-        --border-color: rgba(255, 255, 255, 0.1);
-    }
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-    .chat-container {
-        width: 400px;
-        max-width: 90vw;
-        height: 80vh;
-        max-height: 700px;
-        background-color: var(--card-bg);
-        border-radius: 16px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-    .chat-header {
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .chat-header h3 {
-        color: var(--heading-color);
-        font-weight: 600;
-    }
-    #status-light {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        transition: background-color 0.3s ease;
-    }
-    #status-light.disconnected { background-color: var(--disconnected-color); }
-    #status-light.listening { background-color: var(--listening-color); }
-    #status-light.speaking { background-color: var(--speaking-color); }
-    .chat-messages {
-        flex-grow: 1;
-        padding: 20px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-    .message {
-        max-width: 85%;
-        padding: 12px 18px;
-        border-radius: 20px;
-        line-height: 1.5;
-        word-wrap: break-word;
-    }
-    .user-message {
-        background-color: var(--accent-color);
-        color: white;
-        align-self: flex-end;
-        border-bottom-right-radius: 6px;
-    }
-    .bot-message {
-        background-color: #2c2c2e;
-        color: var(--heading-color);
-        align-self: flex-start;
-        border-bottom-left-radius: 6px;
-    }
-    .chat-input-area {
-        display: flex;
-        padding: 12px;
-        border-top: 1px solid var(--border-color);
-        gap: 8px;
-    }
-    #text-input {
-        flex-grow: 1;
-        border: none;
-        background-color: #2c2c2e;
-        border-radius: 20px;
-        padding: 12px 18px;
-        font-size: 1rem;
-        color: var(--heading-color);
-    }
-    #text-input:focus { outline: none; }
-    #mic-btn {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: all 0.2s ease;
-        background-color: var(--accent-color);
-        color: white;
-        flex-shrink: 0;
-    }
-    #mic-btn.recording {
-        background-color: var(--disconnected-color);
-        transform: scale(1.1);
-    }
-</style>
-
-<!-- public/chat.js -->
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const micBtn = document.getElementById('mic-btn');
-        const textInput = document.getElementById('text-input');
-        const statusLight = document.getElementById('status-light');
-        const chatMessages = document.getElementById('chat-messages');
-
-        let socket;
-        let mediaRecorder;
-        let audioContext;
-        let audioQueue = [];
-        let isPlaying = false;
-        let isRecording = false;
-
-        const setupWebSocket = () => {
-            const wsUrl = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-            socket = new WebSocket(`${wsUrl}${window.location.host}`);
-
-            socket.onopen = () => {
-                console.log('WebSocket connected');
-                statusLight.className = 'listening';
-            };
-
-            socket.onmessage = (event) => {
-                if (typeof event.data === 'string') {
-                    const message = JSON.parse(event.data);
-                    if (message.type === 'text') {
-                        appendMessage(message.data, 'bot');
-                    } else if (message.type === 'tts_complete') {
-                        statusLight.className = 'listening';
-                    } else if (message.type === 'error') {
-                        appendMessage(message.data, 'bot');
-                    }
-                } else {
-                    const audioData = new Uint8Array(event.data);
-                    audioQueue.push(audioData);
-                    if (!isPlaying) {
-                        playNextInQueue();
-                    }
-                }
-            };
-
-            socket.onclose = () => {
-                console.log('WebSocket disconnected');
-                statusLight.className = 'disconnected';
-            };
-        };
-
-        const playNextInQueue = async () => {
-            if (audioQueue.length > 0) {
-                isPlaying = true;
-                statusLight.className = 'speaking';
-                const audioData = audioQueue.shift();
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 8000 });
-                }
-                const pcmData = new Float32Array(audioData.length);
-                for (let i = 0; i < audioData.length; i++) {
-                    pcmData[i] = muLawDecode(audioData[i]);
-                }
-                const audioBuffer = audioContext.createBuffer(1, pcmData.length, 8000);
-                audioBuffer.getChannelData(0).set(pcmData);
-                const source = audioContext.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(audioContext.destination);
-                source.start();
-                source.onended = playNextInQueue;
-            } else {
-                isPlaying = false;
-                if (socket && socket.readyState === WebSocket.OPEN) {
-                    statusLight.className = 'listening';
-                }
-            }
-        };
-
-        const startRecording = async () => {
-            if (!socket || socket.readyState !== WebSocket.OPEN) {
-                setupWebSocket();
-            }
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0 && socket && socket.readyState === WebSocket.OPEN) {
-                        socket.send(event.data);
-                    }
-                };
-                mediaRecorder.start(250);
-                isRecording = true;
-                micBtn.classList.add('recording');
-            } catch (error) {
-                console.error('Mic error:', error);
-            }
-        };
-
-        const stopRecording = () => {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-            isRecording = false;
-            micBtn.classList.remove('recording');
-        };
-
-        micBtn.addEventListener('mousedown', startRecording);
-        micBtn.addEventListener('mouseup', stopRecording);
-        micBtn.addEventListener('touchstart', startRecording);
-        micBtn.addEventListener('touchend', stopRecording);
-
-        textInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && textInput.value.trim() !== '') {
-                if (!socket || socket.readyState !== WebSocket.OPEN) {
-                    setupWebSocket();
-                }
-                const message = textInput.value.trim();
-                appendMessage(message, 'user');
-                socket.send(JSON.stringify({ type: 'text', data: message }));
-                textInput.value = '';
-            }
-        });
-
-        function appendMessage(text, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', `${type}-message`);
-            messageDiv.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function muLawDecode(mu) {
-            mu = ~mu;
-            let abs = ((mu & 0x0F) << 3) + 0x84;
-            abs <<= (mu & 0x70) >> 4;
-            return ((mu & 0x80) ? 0x84 - abs : abs - 0x84) / 32768.0;
-        }
-        
-        setupWebSocket(); // Connect on page load
-    });
-</script>
