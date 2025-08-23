@@ -174,19 +174,34 @@ export default function Orb({
   return (
     <div className="flex flex-col items-center">
       <div 
-        className="relative cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95"
+        className="relative cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95 touch-target"
         onClick={handleClick}
+        style={{ 
+          minHeight: '48px', 
+          minWidth: '48px',
+          padding: '8px',
+          borderRadius: '50%'
+        }}
+        role="button"
+        aria-label={getStatusText()}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
       >
         <canvas 
           ref={canvasRef}
-          className="w-48 h-48"
+          className="w-40 h-40 sm:w-48 sm:h-48 pointer-events-none"
           style={{ filter: "blur(0.5px)" }}
         />
         
         {/* Microphone icon overlay */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <svg 
-            className={`w-8 h-8 ${getStatusColor()} transition-colors duration-300`}
+            className={`w-6 h-6 sm:w-8 sm:h-8 ${getStatusColor()} transition-colors duration-300`}
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
@@ -201,15 +216,15 @@ export default function Orb({
         </div>
       </div>
       
-      <div className={`mt-4 text-sm font-medium ${getStatusColor()} transition-colors duration-300`}>
+      <div className={`mt-4 text-sm sm:text-base font-medium ${getStatusColor()} transition-colors duration-300`}>
         {getStatusText()}
       </div>
       
-      <div className="mt-2 text-xs text-apex-text text-center max-w-xs">
+      <div className="mt-2 text-xs sm:text-sm text-apex-text text-center max-w-xs px-4">
         {status === VoiceBotStatus.SLEEPING ? (
-          "Click the orb to wake me up and start our conversation"
+          "Tap the orb to wake me up and start our conversation"
         ) : socketState === 1 ? (
-          "Speak naturally or click the orb to pause"
+          "Speak naturally or tap the orb to pause"
         ) : (
           "Initializing voice connection..."
         )}

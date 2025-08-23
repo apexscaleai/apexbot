@@ -23,12 +23,12 @@ export default function PromptSuggestions() {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-2 max-w-md">
+    <div className="grid grid-cols-1 gap-3 w-full max-w-md">
       {suggestions.slice(0, 4).map((suggestion, index) => (
         <button
           key={index}
           onClick={() => handleSuggestionClick(suggestion)}
-          className="text-left p-3 bg-apex-card/50 hover:bg-apex-card border border-apex-border rounded-lg text-sm text-apex-text hover:text-apex-heading transition-all duration-200 hover:scale-105"
+          className="text-left p-4 bg-apex-card/50 hover:bg-apex-card active:bg-apex-card border border-apex-border rounded-lg text-sm sm:text-base text-apex-text hover:text-apex-heading active:text-apex-heading transition-all duration-200 hover:scale-105 active:scale-95 touch-target"
         >
           &ldquo;{suggestion}&rdquo;
         </button>

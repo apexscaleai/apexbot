@@ -126,13 +126,13 @@ export default function ChatWidget() {
               className={`flex ${isUser ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[80%] px-4 py-2 rounded-2xl ${
+                className={`max-w-[85%] sm:max-w-[80%] px-4 py-3 rounded-2xl ${
                   isUser
-                    ? "bg-primary-500 text-white ml-4"
-                    : "bg-apex-card text-apex-heading mr-4"
+                    ? "bg-primary-500 text-white ml-2 sm:ml-4"
+                    : "bg-apex-card text-apex-heading mr-2 sm:mr-4"
                 }`}
               >
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
                   {content}
                 </p>
               </div>
@@ -156,21 +156,21 @@ export default function ChatWidget() {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-apex-border">
-        <div className="flex space-x-2">
+      <div className="p-4 border-t border-apex-border safe-area-bottom">
+        <div className="flex space-x-3">
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
-            className="flex-1 bg-apex-card border border-apex-border rounded-lg px-4 py-2 text-apex-heading placeholder-apex-text focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="flex-1 bg-apex-card border border-apex-border rounded-lg px-4 py-3 text-apex-heading placeholder-apex-text focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base min-h-[48px]"
             disabled={isLoading}
           />
           <button
             onClick={() => handleSendMessage(inputValue)}
             disabled={!inputValue.trim() || isLoading}
-            className="btn btn-primary px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn btn-primary px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed touch-target min-h-[48px] min-w-[48px] flex-shrink-0"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -178,8 +178,11 @@ export default function ChatWidget() {
           </button>
         </div>
         
-        <div className="mt-2 text-xs text-apex-text">
+        <div className="mt-2 text-xs text-apex-text lg:block hidden">
           You can also speak directly to the voice assistant on the left.
+        </div>
+        <div className="mt-2 text-xs text-apex-text lg:hidden">
+          Switch to Voice Chat mode above to use voice commands.
         </div>
       </div>
     </div>
