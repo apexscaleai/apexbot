@@ -1,0 +1,297 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useDeepgram } from "../context/DeepgramContextProvider";
+import { useMicrophone } from "../context/MicrophoneContextProvider";
+import { useVoiceBot, VoiceBotStatus } from "../context/VoiceBotContextProvider";
+import { VOICE_OPTIONS } from "../lib/constants";
+
+export default function VoiceBot() {
+  const { connectionState, connectToDeepgram, disconnectFromDeepgram } = useDeepgram();
+  const { setupMicrophone, microphone, startMicrophone, stopMicrophone } = useMicrophone();
+  const {
+    status,
+    startListening,
+    startSpeaking,
+    addVoicebotMessage,
+    addBehindTheScenesEvent,
+    toggleSleep
+  } = useVoiceBot();
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [currentTranscript, setCurrentTranscript] = useState("");
+  const [selectedVoice, setSelectedVoice] = useState("aura-asteria-en");
+  
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const startRecording = useCallback(async () => {
+    if (!microphone) {
+      await setupMicrophone();
+      return;
+    }
+
+    try {
+      setCurrentTranscript("");
+      startListening();
+      
+      // Start recording with MediaRecorder for Deepgram STT
+      const stream = microphone;
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus'
+      });
+
+      audioChunksRef.current = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm;codecs=opus' });
+        await transcribeAudio(audioBlob);
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.start();
+      
+      addBehindTheScenesEvent({ type: "UserStartedSpeaking" });
+      
+      // Auto-stop after 10 seconds or when user stops speaking
+      setTimeout(() => {
+        if (mediaRecorderRef.current?.state === 'recording') {
+          stopRecording();
+        }
+      }, 10000);
+
+    } catch (error) {
+      console.error("Error starting recording:", error);
+    }
+  }, [microphone, setupMicrophone, startListening, addBehindTheScenesEvent]);
+
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current?.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current = null;
+    }
+  }, []);
+
+  const transcribeAudio = async (audioBlob: Blob) => {
+    try {
+      setIsProcessing(true);
+      
+      // Use Deepgram for speech-to-text
+      const formData = new FormData();
+      formData.append('audio', audioBlob);
+      
+      const response = await fetch('/api/voice/deepgram-stt', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to transcribe audio');
+      }
+
+      const data = await response.json();
+      const transcript = data.transcript;
+      
+      if (transcript && transcript.trim()) {
+        setCurrentTranscript(transcript);
+        addVoicebotMessage({ user: transcript });
+        
+        addBehindTheScenesEvent({ 
+          type: "ConversationText", 
+          role: "user", 
+          content: transcript 
+        });
+
+        // Get Gemini response
+        await getGeminiResponse(transcript);
+      }
+    } catch (error) {
+      console.error("Error transcribing audio:", error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const getGeminiResponse = async (userInput: string) => {
+    try {
+      startSpeaking();
+      
+      const response = await fetch('/api/voice/transcribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: userInput }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+      const aiResponse = data.response;
+
+      addVoicebotMessage({ assistant: aiResponse });
+      addBehindTheScenesEvent({ 
+        type: "ConversationText", 
+        role: "assistant", 
+        content: aiResponse 
+      });
+
+      // Use Deepgram TTS to speak the response
+      await speakResponse(aiResponse);
+      
+    } catch (error) {
+      console.error("Error getting AI response:", error);
+      const fallbackResponse = "I apologize, I'm having trouble processing that right now.";
+      addVoicebotMessage({ assistant: fallbackResponse });
+      await speakResponse(fallbackResponse);
+    }
+  };
+
+  const speakResponse = async (text: string) => {
+    try {
+      addBehindTheScenesEvent({ type: "AgentStartedSpeaking" });
+      
+      // Use Deepgram TTS
+      const response = await fetch('/api/voice/deepgram-tts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          text: text,
+          voice: selectedVoice 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate speech');
+      }
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        startListening(); // Ready for next input
+      };
+      
+      await audio.play();
+      
+    } catch (error) {
+      console.error("Error with TTS:", error);
+      // Fallback to browser TTS
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.onend = () => {
+        startListening();
+      };
+      speechSynthesis.speak(utterance);
+    }
+  };
+
+  const handleToggleListening = () => {
+    if (status === VoiceBotStatus.LISTENING) {
+      stopRecording();
+    } else if (status === VoiceBotStatus.SLEEPING || status === VoiceBotStatus.NONE) {
+      startRecording();
+    } else {
+      toggleSleep();
+    }
+  };
+
+  const getButtonText = () => {
+    switch (status) {
+      case VoiceBotStatus.LISTENING:
+        return isProcessing ? "Processing..." : "Listening... (Click to stop)";
+      case VoiceBotStatus.THINKING:
+        return "Thinking...";
+      case VoiceBotStatus.SPEAKING:
+        return "Speaking...";
+      case VoiceBotStatus.SLEEPING:
+        return "Click to wake up";
+      default:
+        return "Click to start talking";
+    }
+  };
+
+  const getButtonColor = () => {
+    switch (status) {
+      case VoiceBotStatus.LISTENING:
+        return "bg-red-500 hover:bg-red-600";
+      case VoiceBotStatus.THINKING:
+        return "bg-yellow-500";
+      case VoiceBotStatus.SPEAKING:
+        return "bg-blue-500";
+      case VoiceBotStatus.SLEEPING:
+        return "bg-gray-500 hover:bg-gray-600";
+      default:
+        return "bg-green-500 hover:bg-green-600";
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center space-y-4 p-6 bg-white rounded-lg shadow-lg">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Voice Chat with Lexy</h2>
+        <p className="text-gray-600">Powered by Gemini AI & Deepgram</p>
+      </div>
+
+      {/* Voice Selection */}
+      <div className="w-full max-w-xs">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Voice Selection
+        </label>
+        <select
+          value={selectedVoice}
+          onChange={(e) => setSelectedVoice(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {VOICE_OPTIONS.map((voice) => (
+            <option key={voice.value} value={voice.value}>
+              {voice.name} ({voice.accent} {voice.gender}) - {voice.description}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Main Control Button */}
+      <button
+        onClick={handleToggleListening}
+        disabled={isProcessing}
+        className={`px-8 py-4 rounded-full text-white font-semibold text-lg transition-colors duration-200 ${getButtonColor()}`}
+      >
+        {getButtonText()}
+      </button>
+
+      {/* Current Transcript */}
+      {currentTranscript && (
+        <div className="w-full max-w-lg p-4 bg-gray-50 rounded-lg">
+          <h3 className="font-semibold text-gray-700 mb-2">You said:</h3>
+          <p className="text-gray-800">{currentTranscript}</p>
+        </div>
+      )}
+
+      {/* Status Indicator */}
+      <div className="flex items-center space-x-2">
+        <div className={`w-3 h-3 rounded-full ${
+          status === VoiceBotStatus.LISTENING ? 'bg-red-500 animate-pulse' :
+          status === VoiceBotStatus.THINKING ? 'bg-yellow-500 animate-spin' :
+          status === VoiceBotStatus.SPEAKING ? 'bg-blue-500 animate-pulse' :
+          status === VoiceBotStatus.SLEEPING ? 'bg-gray-500' : 'bg-green-500'
+        }`}></div>
+        <span className="text-sm text-gray-600 capitalize">
+          {status || 'Ready'}
+        </span>
+      </div>
+    </div>
+  );
+}

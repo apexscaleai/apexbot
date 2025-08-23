@@ -1,20 +1,42 @@
 {
-    "name": "voice-ai-chatbot",
-    "version": "1.0.0",
-    "description": "A real-time voice and text AI chatbot.",
-    "main": "server.js",
-    "scripts": {
-      "start": "node server.js"
-    },
-    "author": "Apex Scale AI",
-    "license": "ISC",
-    "dependencies": {
-      "@deepgram/sdk": "^4.11.2",
-      "@google/generative-ai": "^0.14.1",
-      "cors": "^2.8.5",
-      "dotenv": "^16.4.5",
-      "express": "^4.19.2",
-      "ws": "^8.18.0"
-    }
+  "name": "apexaibot-integrated",
+  "version": "1.0.0",
+  "description": "Apex Scale AI - Intelligent Voice and Text Chatbot",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "setup": "node scripts/setup.js",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@deepgram/sdk": "^4.11.2",
+    "@google/generative-ai": "^0.14.1",
+    "@lottiefiles/react-lottie-player": "^3.5.3",
+    "@react-hook/resize-observer": "^2.0.2",
+    "@supabase/supabase-js": "^2.55.0",
+    "@uidotdev/usehooks": "^2.4.1",
+    "dotenv": "^16.4.5",
+    "next": "^14.2.31",
+    "node-fetch": "^3.3.2",
+    "react": "^18",
+    "react-device-detect": "^2.2.3",
+    "react-dom": "^18",
+    "sass": "^1.77.8",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.10",
+    "@types/react": "18.3.4",
+    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.6",
+    "eslint-config-prettier": "^9.1.0",
+    "postcss": "^8.4.41",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.10",
+    "typescript": "5.5.4"
   }
-  
+}

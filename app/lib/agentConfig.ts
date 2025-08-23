@@ -1,0 +1,39 @@
+import { StsConfig } from "../utils/deepgramUtils";
+
+// Configuration using OpenAI for think provider since Google isn't supported
+export const agentConfig: StsConfig = {
+  type: "Settings",
+  audio: {
+    input: {
+      encoding: "linear16",
+      sample_rate: 16000,
+    },
+    output: {
+      encoding: "linear16",
+      sample_rate: 24000,
+      container: "none",
+    },
+  },
+  agent: {
+    listen: {
+      provider: {
+        type: "deepgram",
+        model: "nova-2",
+      },
+    },
+    think: {
+      provider: {
+        type: "google",
+        model: "gemini-2.5-flash"
+      },
+      prompt: "You are Lexy, the intelligent AI assistant for Apex Scale AI. You help businesses understand our AI automation solutions. Keep responses conversational and under 100 words. Our services: Lead Capture Bot, Intelligent Sales Agent, and Custom Automation. Always be helpful and guide users toward solutions that fit their needs.",
+    },
+    speak: {
+      provider: {
+        type: "deepgram",
+        model: "aura-asteria-en",
+      },
+    },
+    greeting: "Hi there! I'm Lexy, your AI assistant from Apex Scale AI. I'm here to help you understand how our intelligent automation solutions can transform your business. Whether you're interested in our Lead Capture Bot, Intelligent Sales Agent, or Custom Automation services, I'm ready to assist you. What would you like to know?",
+  },
+};

@@ -1,0 +1,11 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/chat/route": "app/api/chat/route.js",
+  "/api/authenticate/route": "app/api/authenticate/route.js",
+  "/api/google/route": "app/api/google/route.js",
+  "/api/tts/route": "app/api/tts/route.js",
+  "/api/voice/transcribe/route": "app/api/voice/transcribe/route.js",
+  "/api/test-config/route": "app/api/test-config/route.js",
+  "/api/voice/deepgram-stt/route": "app/api/voice/deepgram-stt/route.js",
+  "/page": "app/page.js"
+}
